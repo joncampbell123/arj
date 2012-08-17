@@ -31,7 +31,7 @@
 static char strform[]="%s";
 static char sfx_name[16];
 static char buf[2048];
-static char l_nullstr[]="";
+static char __attribute__((unused)) l_nullstr[]="";
 
 /* Q&D tolower() */
 
@@ -132,7 +132,7 @@ static void package_unix(FILE *stream, char *name, char *trunk, char *realpath, 
 static void package_txt(FILE *stream, char *name, char *trunk, char *realpath, char *unixpath)
 {
  char tmp_name[CCHMAXPATH], realname[CCHMAXPATH];
- char *p;
+/* char *p;*/
 
  strcpy(tmp_name, trunk);
  strcat(tmp_name, P);
@@ -327,7 +327,7 @@ int main(int argc, char **argv)
   char lang_tag='r';
  #endif
  char version_tag[8];
- char *p, *pname, *ppath;
+ char __attribute__((unused)) *p, __attribute__((unused)) *pname, __attribute__((unused)) *ppath;
  FILE *istream, *ostream;
  static char pkg_rsp_draft[CCHMAXPATH], pkg_rsp[CCHMAXPATH];
  static char tmp_name[CCHMAXPATH];
@@ -441,7 +441,7 @@ int main(int argc, char **argv)
     else
     {
      pname=buf;
-     ppath=l_nullstr;
+     ppath=l_nullstr; /* <- GCC: l_nullstr defined but not used----BZZZT! WRONG! Are you blind moron? -J.C. */
     }
     *p='\0';
     chdir(ppath);

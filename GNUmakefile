@@ -43,7 +43,7 @@ LOCALE = en
 endif
 
 ALL_CFLAGS = -DLOCALE=LANG_$(LOCALE) -DLOCALE_DESC="\"$(LOCALE)\"" \
-	     -DPKGLIBDIR="\"$(pkglibdir)\"" -D_UNIX
+	     -DPKGLIBDIR="\"$(pkglibdir)\"" -D_UNIX -Wall -pedantic
 
 ifndef COMMERCIAL
 PACKAGE = s
