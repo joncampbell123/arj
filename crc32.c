@@ -12,13 +12,13 @@ DEBUGHDR(__FILE__)                      /* Debug information block */
 #define CRCPOLY          0xEDB88320L    /* CRC32 polynomial */
 #define UPDATE_CRC(r, c) crc32tab[((unsigned char)(r)^(unsigned char)(c))&0xFF]^(r>>CHAR_BIT)
 
-unsigned long crc32term;
+uint32_t crc32term;
 #ifdef ASM8086
  unsigned short crc32tab_lo[256];
  unsigned short crc32tab_hi[256];
  static unsigned short xbp;
 #else
- unsigned long crc32tab[256];
+ uint32_t crc32tab[256];
 #endif
 
 /* CRC32 initialization */
@@ -77,7 +77,7 @@ lt_0:
   }
  #else
   unsigned int i, j;
-  unsigned long r;
+  uint32_t r;
 
   for(i=0; i<=UCHAR_MAX; i++)
   {
@@ -281,7 +281,7 @@ str_nchar:
 
 /* Evaluates CRC32 based on character and term given */
 
-unsigned long crc32_for_char(unsigned long crc32_term, unsigned char newc)
+uint32_t crc32_for_char(uint32_t crc32_term, unsigned char newc)
 {
  #ifdef ASM8086
   asm{
