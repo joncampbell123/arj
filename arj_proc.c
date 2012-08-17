@@ -2466,14 +2466,14 @@ static int get_str_from_jq()
     *tsptr='\0';
   endptr=tsptr;
   tsptr=sptr;
-  while((unsigned int)tsptr<(unsigned int)endptr&&patterns<SEARCH_STR_MAX)
+  while((unsigned long)tsptr<(unsigned long)endptr&&patterns<SEARCH_STR_MAX)
   {
    while(*tsptr=='\0')
     tsptr++;
-   if((unsigned int)tsptr<(unsigned int)endptr)
+   if((unsigned long)tsptr<(unsigned long)endptr)
    {
     search_str[patterns++]=tsptr;
-    while(*tsptr!='\0'&&(unsigned int)tsptr<(unsigned int)endptr)
+    while(*tsptr!='\0'&&(unsigned long)tsptr<(unsigned long)endptr)
      tsptr++;
    }
   }
