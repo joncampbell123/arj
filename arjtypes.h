@@ -33,7 +33,7 @@ struct file_mode
 struct timestamp
 {
  unsigned long dos;                     /* Local */
- unsigned long unixtime;                /* GMT */
+ time_t unixtime;                       /* GMT */
 };
 
 /* A handy macro for verifying the validity of timestamps */
@@ -44,7 +44,7 @@ struct timestamp
 
 void fm_store(struct file_mode *dest, int host_os, int mode);
 unsigned int fm_native(struct file_mode *fm, int host_os);
-void ts_store(struct timestamp *dest, int host_os, unsigned long value);
+void ts_store(struct timestamp *dest, int host_os, time_t value);
 unsigned long ts_native(struct timestamp *ts, int host_os);
 int ts_cmp(struct timestamp *ts1, struct timestamp *ts2);
 void make_timestamp(struct timestamp *dest, int y, int m, int d, int hh, int mm, int ss);

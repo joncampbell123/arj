@@ -68,7 +68,7 @@ endif
 
 ifdef DEBUG
 DEBUG_SM = d
-ALL_CFLAGS += -g -DDEBUG
+ALL_CFLAGS += -g3 -O0 -DDEBUG
 else
 DEBUG_SM = r
 ADD_LDFLAGS = -s gnu/stripgcc.lnk
@@ -271,12 +271,16 @@ ARJCRYPT_OBJS = $(patsubst %,$(ARJCRYPT_DIR)/%, \
 
 $(ARJCRYPT_DIR)/arjcrypt$d: $(ARJCRYPT_OBJS) $(TOOLS_DIR)/postproc$x
 	$(CC) $(ALL_CFLAGS) $(DLL_FLAGS) -o $@ $(ARJCRYPT_OBJS) $(ARJCRYPT_DEF) $(LIBS)
+ifndef DEBUG
 	strip --strip-debug -R .comment $(ARJCRYPT_DIR)/arjcrypt$d
+endif
 
 $(BASEDIR)/nmsg_crp.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_crp $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)
+ifndef DEBUG
 	strip --strip-all -R .comment $(TOOLS_DIR)/msgbind$x
 	upx --best $(TOOLS_DIR)/msgbind$x
+endif
 
 #
 # SFX stub
@@ -367,8 +371,10 @@ $(ARJ_DIR)/arj$x: $(ARJ_OBJS) \
 	$(TOOLS_DIR)/join $(ARJ_DIR)/arj$x $(SFXSTUB_DIR)/sfxstub$x
 	rm -f $(BASEDIR)/help.arj
 	$(ARJ_DIR)/arj$x a $(BASEDIR)/help.arj -+ -t1f -2e -e -jm -jh65535 -jt $(RES_DIR)/$(LOCALE)/arj?.txt
+ifndef DEBUG
 	strip --strip-all -R .comment $(ARJ_DIR)/arj$x
 	upx --best $(ARJ_DIR)/arj$x
+endif
 	$(TOOLS_DIR)/join $(ARJ_DIR)/arj$x $(BASEDIR)/help.arj
 
 $(BASEDIR)/fmsg_arj.c $(BASEDIR)/imsg_arj.c $(BASEDIR)/nmsg_arj.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
@@ -387,8 +393,10 @@ REARJ_OBJS = $(patsubst %,$(REARJ_DIR)/%, \
 $(REARJ_DIR)/rearj$x: $(REARJ_OBJS) \
 		      $(TOOLS_DIR)/postproc$x
 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ $(REARJ_OBJS) $(LIBS)
+ifndef DEBUG
 	strip --strip-all -R .comment $(REARJ_DIR)/rearj$x
 	upx --best $(REARJ_DIR)/rearj$x
+endif
 
 $(BASEDIR)/fmsg_rej.c $(BASEDIR)/imsg_rej.c $(BASEDIR)/nmsg_rej.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_rej $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)
@@ -404,8 +412,10 @@ REGISTER_OBJS = $(patsubst %,$(REGISTER_DIR)/%, \
 $(REGISTER_DIR)/$(REGISTER)$x: $(REGISTER_OBJS) \
 		            $(TOOLS_DIR)/postproc$x
 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ $(REGISTER_OBJS) $(LIBS)
+ifndef DEBUG
 	strip --strip-all -R .comment $(REGISTER_DIR)/$(REGISTER)$x
 	upx --best $(REGISTER_DIR)/$(REGISTER)$x
+endif
 
 $(BASEDIR)/fmsg_reg.c $(BASEDIR)/imsg_reg.c $(BASEDIR)/nmsg_reg.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_reg $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)
@@ -420,8 +430,10 @@ ARJDISP_OBJS = $(patsubst %,$(ARJDISP_DIR)/%, \
 
 $(ARJDISP_DIR)/arjdisp$x: $(ARJDISP_OBJS)
 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ $(ARJDISP_OBJS) $(LIBS)
+ifndef DEBUG
 	strip --strip-all -R .comment $(ARJDISP_DIR)/arjdisp$x
 	upx --best $(ARJDISP_DIR)/arjdisp$x
+endif
 
 $(BASEDIR)/fmsg_adi.c $(BASEDIR)/imsg_adi.c $(BASEDIR)/nmsg_adi.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_adi $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)

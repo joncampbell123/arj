@@ -8,15 +8,17 @@
 #ifndef ARJ_PROC_INCLUDED
 #define ARJ_PROC_INCLUDED
 
+#include <stdint.h>
+
 /* Helper macros */
 
 #define mget_byte(p) (*(unsigned char FAR *)(p)&0xFF)
 #define mput_byte(c, p) *(unsigned char FAR *)(p)=(unsigned char)(c)
 #ifndef WORDS_BIGENDIAN
-#define mget_word(p) (*(unsigned short *)(p)&0xFFFF)
-#define mput_word(w,p) (*(unsigned short *)(p)=(unsigned short)(w))
-#define mget_dword(p) (*(unsigned long *)(p))
-#define mput_dword(w,p) (*(unsigned long *)(p)=(unsigned long)(w))
+#define mget_word(p) (*(uint16_t *)(p)&0xFFFF)
+#define mput_word(w,p) (*(uint16_t *)(p)=(uint16_t)(w))
+#define mget_dword(p) (*(uint32_t *)(p))
+#define mput_dword(w,p) (*(uint32_t *)(p)=(uint32_t)(w))
 #endif
 
 /* Prototypes */

@@ -7,6 +7,7 @@
  */
 
 #include <time.h>
+#include <assert.h>
 
 #include "arj.h"
 
@@ -75,29 +76,29 @@ unsigned int fm_native(struct file_mode *fm, int host_os)
 /* Folds a timestamp into the range handled by LIBC routines, returning a
    modified timestamp and a number of years to compensate. */
 
-static unsigned int fold_timestamp(unsigned long *tt)
+static unsigned int fold_timestamp(time_t *tt)
 {
- unsigned long v, d;
+ time_t v, d;
 
- d=(unsigned long)(*tt)/86400;
- if(d>=47482&&d<=47846)
+ d=(time_t)(*tt)/86400UL;
+ if(d>=47482UL&&d<=47846UL)
  {
   /* 2100 -> 1993 */
-  *tt-=39081*86400UL;
-  return(2100-1993);
+  *tt-=39081UL*86400UL;
+  return(2100UL-1993UL);
  }
- else if(d>=47847)
+ else if(d>=47847UL)
  {
   /* 2101... -> 2005... */
-  *tt-=35063*86400UL;
-  return(2101-2005);
+  *tt-=35063UL*86400UL;
+  return(2101UL-2005UL);
  }
  else
  {
   /* Wrap into 28-year cycles (1970...1997) */
-  v=((unsigned long)*tt)/((28*365+7)*86400);
-  *tt=((unsigned long)*tt)%((28*365+7)*86400);
-  return(v*28);
+  v=((time_t)*tt)/((28UL*365UL+7UL)*86400UL);
+  *tt=((time_t)*tt)%((28UL*365UL+7UL)*86400UL);
+  return(v*28UL);
  }
  /* NOTREACHED */
 }
@@ -107,12 +108,12 @@ static unsigned int fold_timestamp(unsigned long *tt)
 struct tm *arj_localtime(const time_t *ts)
 {
  unsigned int v;
- unsigned long tt;
  struct tm *rc;
+ time_t tt;
 
  tt=*ts;
  v=fold_timestamp(&tt);
- rc=localtime((time_t *)&tt);
+ rc=localtime(&tt);
  if(rc!=NULL)
   rc->tm_year+=v;
  return(rc);
@@ -135,11 +136,12 @@ static int isleapyear(int year)
 
 /* Converts a UNIX timestamp to the DOS style */
 
-static unsigned long ts_unix2dos(const long ts)
+static unsigned long ts_unix2dos(const time_t ts)
 {
  struct tm *stm;
 
- stm=arj_localtime((time_t*)&ts);
+ stm=arj_localtime(&ts);
+ assert(stm != NULL);
  return(get_tstamp(stm->tm_year+1900, stm->tm_mon+1, stm->tm_mday,
         stm->tm_hour, stm->tm_min, stm->tm_sec));
 }
@@ -246,7 +248,7 @@ static unsigned long ts_dos2unix(unsigned long ts)
 
 /* Stores a timestamp */
 
-void ts_store(struct timestamp *dest, int host_os, unsigned long value)
+void ts_store(struct timestamp *dest, int host_os, time_t value)
 {
  if(host_os==OS_SPECIAL)
   dest->dos=dest->unixtime=value;

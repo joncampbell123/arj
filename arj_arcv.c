@@ -68,7 +68,7 @@ static unsigned int hget_word()
  unsigned int result;
 
  result=mget_word(tmp_hptr);
- tmp_hptr+=sizeof(short);
+ tmp_hptr+=sizeof(uint16_t);
  return result;
 }
 
@@ -79,7 +79,7 @@ static unsigned long hget_longword()
  unsigned long result;
 
  result=mget_dword(tmp_hptr);
- tmp_hptr+=sizeof(unsigned long);
+ tmp_hptr+=sizeof(uint32_t);
  return result;
 }
 
@@ -90,7 +90,7 @@ static unsigned long hget_longword()
 static void hput_word(unsigned int w)
 {
  mput_word(w,tmp_hptr); 
- tmp_hptr+=sizeof(unsigned short);
+ tmp_hptr+=sizeof(uint16_t);
 }
 
 /* Writes four bytes to the header, incrementing the pointer */
@@ -98,7 +98,7 @@ static void hput_word(unsigned int w)
 static void hput_longword(unsigned long l)
 {
  mput_dword(l,tmp_hptr);
- tmp_hptr+=sizeof(unsigned long);
+ tmp_hptr+=sizeof(uint32_t);
 }
 
 /* Calculates and stores the basic header size */
