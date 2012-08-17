@@ -6,6 +6,10 @@
 
 # Environment
 
+ifndef CC
+CC=gcc
+endif
+
 x = 
 d = .so
 OS_ID = UNIX
@@ -413,7 +417,8 @@ prepare:
 	-mkdir -p $(REARJ_DIR)
 	-mkdir -p $(REGISTER_DIR)
 	-mkdir -p $(ARJDISP_DIR)
-
+	make $(BASEDIR)/fmsg_arj.c
+               
 #
 # Cleanup
 #
