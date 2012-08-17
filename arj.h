@@ -6,6 +6,13 @@
  *
  */
 
+/* Jonathan C: There is WAY TOO MUCH in this codebase that assumes 32-bit ints and longs.
+ *             64-bit builds are usable only if you're willing to put up with "CRC error!"
+ *             messages. */
+#if defined(__amd64__)
+# pragma message ("ARJ may have problems when compiled for x86_64. At the very least, expect 'CRC error!' messages. Beware!")
+#endif
+
 #ifndef ARJ_INCLUDED
 #define ARJ_INCLUDED
 
