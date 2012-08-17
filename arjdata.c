@@ -211,6 +211,14 @@ static void safe_strcpy(char *dest, char *src)
  memmove(dest, src, strlen(src)+1);
 }
 
+/* Jonathan C:
+ * string-oriented version of memmove(), written with possible overlap between 'src' and 'dest' in mind */
+void strmmove(char *dest,const char *src) {
+	if (dest == src) return;
+	while (*src != 0) *dest++ = *src++;
+	*dest++ = 0; /* terminating NUL */
+}
+
 /* Context substitution routine */
 
 char *expand_tags(char *str, int limit)
@@ -232,7 +240,27 @@ char *expand_tags(char *str, int limit)
   {
    if(*(p+1)==TAG_CHAR)
    {
-    strcpy(p, p+1);
+    /* Jonathan C: The original source code made a mistake here by using strcpy()
+     *             to erase the char. That may have worked back in the bad old DOS
+     *             days, but today with GCC's intrinsics in effect it's entirely
+     *             possible the overlapped string copy involves DWORD, QWORD, or even
+     *             16-byte (SSE) sized read/write cycles that end up corrupting the
+     *             string instead of shifting over as intended.
+     *
+     *             It's the reason why ARJ fails to compile on my Linux x86_64 system,
+     *             because the corrupted string triggers a GCC syntax error.
+     *
+     *             What is needed here is an ASCIIZ string version of memmove() which
+     *             carries out the operation with possible overlap in mind. The standard
+     *             C library does not provide one, so we provide our own: strmmove()
+     *
+     *             i686 result in fmsg_arj.c (happens to be correct):
+     *             char M_SW_TABLE[]="JHABCDEFGIKLMNOPQRSTUVWXYZ?!$+#&*@2_";
+     *
+     *             x86_64 result in fmsg_arj.c (string corruption by misuse of strcpy):
+     *             char M_SW_TABLE[]="JHABCDEFGIKLMNOPQRSTUVWXYZ?!$+#&*@_"";
+     */
+    strmmove(p, p+1);
     p++;
    }
    else if(*(p+1)==TAG_SPECIAL_BEGIN&&(et=strchr(p+3, TAG_SPECIAL_END))!=NULL)
