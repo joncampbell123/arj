@@ -1021,25 +1021,20 @@ int main(int argc, char *argv[])
   /* Jonathan C: Our build scripts' strip + upx packing interferes with
    * ARJ's self extracting help system. We put ARJ's documentation in
    * /usr/share/doc/arj instead */
-  if (chdir("/usr/share/doc/arj"))
-   exit(ARJ_ERL_CANTOPEN);
-
-  {
+  if (chdir("/usr/share/doc/arj") == 0) {
     int rd;
     char buf[256],*p;
     FILE *f=fopen(f_arg_array[0],"r");
-    if (f==NULL) {
-      fprintf(stderr,"Unable to open %s\n",f_arg_array[0]);
-      exit(ARJ_ERL_CANTOPEN);
-    }
-    while (!feof(f) && !ferror(f)) {
-     fgets(buf,sizeof(buf),f);
-     for (p=buf;*p && *p != '\n';) p++; *p = 0; /* chomp() */
-     printf("%s\n",buf);
-    }
-    fclose(f);
+    if (f!=NULL) {
+     while (!feof(f) && !ferror(f)) {
+      fgets(buf,sizeof(buf),f);
+      for (p=buf;*p && *p != '\n';) p++; *p = 0; /* chomp() */
+      printf("%s\n",buf);
+     }
+     fclose(f);
+     exit(ARJ_ERL_SUCCESS);
+   }
   }
-  exit(ARJ_ERL_SUCCESS);
   #endif
  }
  #if TARGET==DOS

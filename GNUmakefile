@@ -43,7 +43,21 @@ LOCALE = en
 endif
 
 ALL_CFLAGS = -DLOCALE=LANG_$(LOCALE) -DLOCALE_DESC="\"$(LOCALE)\"" \
-	     -DPKGLIBDIR="\"$(pkglibdir)\"" -D_UNIX -Wall -pedantic
+	     -DPKGLIBDIR="\"$(pkglibdir)\"" -D_UNIX -Wall -pedantic -std=gnu99 -g0 -Os -fomit-frame-pointer
+
+# Remove warn flags one-by-one as you fix up the code and remove all the DOS, Win32, OS/2 crap
+ALL_CFLAGS += -Wno-unused-value
+ALL_CFLAGS += -Wno-uninitialized
+ALL_CFLAGS += -Wno-sequence-point
+ALL_CFLAGS += -Wno-unused-function
+ALL_CFLAGS += -Wno-unused-variable
+ALL_CFLAGS += -Wno-unused-but-set-variable
+ALL_CFLAGS += -Wno-implicit-function-declaration
+ALL_CFLAGS += -Wno-strict-aliasing
+ALL_CFLAGS += -Wno-missing-braces
+ALL_CFLAGS += -Wno-unused-label
+ALL_CFLAGS += -Wno-pointer-sign
+ALL_CFLAGS += -Wno-overflow
 
 ifndef COMMERCIAL
 PACKAGE = s
@@ -257,9 +271,12 @@ ARJCRYPT_OBJS = $(patsubst %,$(ARJCRYPT_DIR)/%, \
 
 $(ARJCRYPT_DIR)/arjcrypt$d: $(ARJCRYPT_OBJS) $(TOOLS_DIR)/postproc$x
 	$(CC) $(ALL_CFLAGS) $(DLL_FLAGS) -o $@ $(ARJCRYPT_OBJS) $(ARJCRYPT_DEF) $(LIBS)
+	strip --strip-debug -R .comment $(ARJCRYPT_DIR)/arjcrypt$d
 
 $(BASEDIR)/nmsg_crp.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_crp $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)
+	strip --strip-all -R .comment $(TOOLS_DIR)/msgbind$x
+	upx --best $(TOOLS_DIR)/msgbind$x
 
 #
 # SFX stub
@@ -350,6 +367,8 @@ $(ARJ_DIR)/arj$x: $(ARJ_OBJS) \
 	$(TOOLS_DIR)/join $(ARJ_DIR)/arj$x $(SFXSTUB_DIR)/sfxstub$x
 	rm -f $(BASEDIR)/help.arj
 	$(ARJ_DIR)/arj$x a $(BASEDIR)/help.arj -+ -t1f -2e -e -jm -jh65535 -jt $(RES_DIR)/$(LOCALE)/arj?.txt
+	strip --strip-all -R .comment $(ARJ_DIR)/arj$x
+	upx --best $(ARJ_DIR)/arj$x
 	$(TOOLS_DIR)/join $(ARJ_DIR)/arj$x $(BASEDIR)/help.arj
 
 $(BASEDIR)/fmsg_arj.c $(BASEDIR)/imsg_arj.c $(BASEDIR)/nmsg_arj.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
@@ -368,6 +387,8 @@ REARJ_OBJS = $(patsubst %,$(REARJ_DIR)/%, \
 $(REARJ_DIR)/rearj$x: $(REARJ_OBJS) \
 		      $(TOOLS_DIR)/postproc$x
 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ $(REARJ_OBJS) $(LIBS)
+	strip --strip-all -R .comment $(REARJ_DIR)/rearj$x
+	upx --best $(REARJ_DIR)/rearj$x
 
 $(BASEDIR)/fmsg_rej.c $(BASEDIR)/imsg_rej.c $(BASEDIR)/nmsg_rej.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_rej $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)
@@ -383,6 +404,8 @@ REGISTER_OBJS = $(patsubst %,$(REGISTER_DIR)/%, \
 $(REGISTER_DIR)/$(REGISTER)$x: $(REGISTER_OBJS) \
 		            $(TOOLS_DIR)/postproc$x
 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ $(REGISTER_OBJS) $(LIBS)
+	strip --strip-all -R .comment $(REGISTER_DIR)/$(REGISTER)$x
+	upx --best $(REGISTER_DIR)/$(REGISTER)$x
 
 $(BASEDIR)/fmsg_reg.c $(BASEDIR)/imsg_reg.c $(BASEDIR)/nmsg_reg.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_reg $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)
@@ -397,6 +420,8 @@ ARJDISP_OBJS = $(patsubst %,$(ARJDISP_DIR)/%, \
 
 $(ARJDISP_DIR)/arjdisp$x: $(ARJDISP_OBJS)
 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ $(ARJDISP_OBJS) $(LIBS)
+	strip --strip-all -R .comment $(ARJDISP_DIR)/arjdisp$x
+	upx --best $(ARJDISP_DIR)/arjdisp$x
 
 $(BASEDIR)/fmsg_adi.c $(BASEDIR)/imsg_adi.c $(BASEDIR)/nmsg_adi.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_adi $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)
