@@ -16,8 +16,7 @@
 
 extern uint32_t crc32term;
 #ifdef TILED
- extern unsigned short crc32tab_lo[256];
- extern unsigned short crc32tab_hi[256];
+# error not supported
 #else
  extern uint32_t crc32tab[256];
 #endif
@@ -25,7 +24,7 @@ extern uint32_t crc32term;
 /* Platform-independent CRC macro */
 
 #ifdef TILED
- #define get_crc32tab(i) ((((uint32_t)crc32tab_hi[i])<<16L)+(uint32_t)crc32tab_lo[i])
+# error not supported
 #else
  #define get_crc32tab(i) crc32tab[i]
 #endif

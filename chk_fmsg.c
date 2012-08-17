@@ -36,8 +36,14 @@ void check_fmsg(int skip_check)
     crc32_for_string(*index_ptr);
    #endif
   }
-  if(crc32term!=FARMSGS_CRC32)
+  if(crc32term!=FARMSGS_CRC32) {
+   #ifdef DEBUG
+   fprintf(stderr,"CRC check failed: got=%08lx expected=%08lx\n",
+     (unsigned long)crc32term,
+     (unsigned long)FARMSGS_CRC32);
+   #endif
    error(M_CRC_ERROR);
+  }
  }
  #if SFX_LEVEL<=ARJSFXV
  else

@@ -907,7 +907,7 @@ void FAR *farmalloc_msg(unsigned long size)
 
  #if defined(DEBUG)&&!defined(ARJUTIL)
   if(debug_enabled&&strchr(debug_opt, 'm')!=NULL)
-   printf("(Fm%u", size);
+   printf("(Fm%lu", size);
  #endif
  if((tmp=farmalloc(size))==NULL)
   #ifdef ARJUTIL
