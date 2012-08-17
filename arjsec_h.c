@@ -7,6 +7,7 @@
  */
 
 #include "arj.h"
+#include <stdint.h>
 
 DEBUGHDR(__FILE__)                      /* Debug information block */
 
@@ -19,13 +20,13 @@ int get_arjsec_signature(FILE *stream, long offset, char *signature, int iter)
  return(0);
 #else
  unsigned char tail[ARJSEC_RECORD_SIZE];
- unsigned long tmp_tail[8];
- unsigned long block[8];                /* CRC accumulation */
+ uint32_t tmp_tail[8];
+ uint32_t block[8];                /* CRC accumulation */
  unsigned char *dest;
  int i;
  /* We need to retain the position when processing ARJSFX archives */
  #if SFX_LEVEL<=ARJSFXV
-  unsigned long cur_pos;
+  uint32_t cur_pos;
   int c;
  #endif
 
@@ -127,7 +128,7 @@ int get_arjsec_signature(FILE *stream, long offset, char *signature, int iter)
 #if SFX_LEVEL>=ARJ||defined(REARJ)||defined(ARJUTIL)
 int verify_reg_name(char *key1, char *key2, char *name, char *validation)
 {
- unsigned long encrypt_pad[8], sec_blk[8];
+ uint32_t encrypt_pad[8], sec_blk[8];
  int i;
  char c, j;
 

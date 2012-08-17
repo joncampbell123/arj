@@ -33,7 +33,7 @@ static unsigned short arjsec_seeds[]={0xDD0D, 0x4920, 0x5503, 0x614D,
 /* Appends an ARJ-SECURITY envelope to the file, returning a nonzero value if
    failed. */
 
-int create_envelope(FILE *stream, unsigned long offset, int iter)
+int create_envelope(FILE *stream, uint32_t offset, int iter)
 {
  #ifndef COMMERCIAL
   return(1);
@@ -48,12 +48,12 @@ int create_envelope(FILE *stream, unsigned long offset, int iter)
 /* Basic processing of the given signature. Separate term variables are used
    so the code will be optimized by placing some of them into GP registers. */
 
-void arjsec_term(unsigned long *block, unsigned long *dest, int iter)
+void arjsec_term(uint32_t *block, uint32_t *dest, int iter)
 {
- unsigned long block_acc[4];
- unsigned long exchange[16];            /* Intermediate buffer */
+ uint32_t block_acc[4];
+ uint32_t exchange[16];            /* Intermediate buffer */
  int i;
- unsigned long chksum;                  /* Checksum of block_acc */
+ uint32_t chksum;                  /* Checksum of block_acc */
  unsigned short term0, term1, term2, term3;
 
  exchange[0]=dest[0];
@@ -80,8 +80,8 @@ void arjsec_term(unsigned long *block, unsigned long *dest, int iter)
  for(i=0; i<iter; i++)
  {
   chksum=(chksum<<(32-i%32))|(chksum>>(i%32));
-  chksum*=(((unsigned long)i<<1)|1);
-  chksum^=block_acc[i%4]>>(unsigned long)((i>>2)%31);
+  chksum*=(((uint32_t)i<<1)|1);
+  chksum^=block_acc[i%4]>>(uint32_t)((i>>2)%31);
   chksum^=block_acc[(i>>3)&3]<<((i>>5)%31);
   chksum=crc32_for_char(chksum, (unsigned char)(i%256));
   term0=(unsigned short)(chksum>>0)%8;
@@ -125,10 +125,10 @@ void arjsec_term(unsigned long *block, unsigned long *dest, int iter)
     exchange[term1]=crc32_for_char(exchange[term1], (unsigned char)((exchange[term2]^exchange[term3])>>24));
     break;
    case 5:
-    exchange[term1]+=(unsigned long)((term2<<4)+term3);
+    exchange[term1]+=(uint32_t)((term2<<4)+term3);
     break;
    case 6:
-    exchange[term1]-=(unsigned long)((term2<<4)+term3);
+    exchange[term1]-=(uint32_t)((term2<<4)+term3);
     break;
    case 7:
     exchange[term1]*=(exchange[term2]*2L+1L);
@@ -151,7 +151,7 @@ void arjsec_term(unsigned long *block, unsigned long *dest, int iter)
 
 /* Decodes encrypted ARJ-security data */
 
-void arjsec_xor(unsigned long *dest, unsigned long *src)
+void arjsec_xor(uint32_t *dest, uint32_t *src)
 {
  dest[0]^=src[0];
  dest[1]^=src[1];
@@ -163,7 +163,7 @@ void arjsec_xor(unsigned long *dest, unsigned long *src)
 
 /* Prepares a garble block with a special pattern */
 
-void arjsec_newblock(unsigned long *dest)
+void arjsec_newblock(uint32_t *dest)
 {
  dest[3]=0xFFFFFFFF;
  dest[0]=0xDB7E936C;
@@ -173,9 +173,9 @@ void arjsec_newblock(unsigned long *dest)
 
 /* Performs a CRC inversion upon the given encrypted block */
 
-void arjsec_invert(unsigned long *block)
+void arjsec_invert(uint32_t *block)
 {
- unsigned long tmp_block[3];
+ uint32_t tmp_block[3];
  int i;
 
  tmp_block[2]=block[0];
@@ -204,13 +204,13 @@ void arjsec_invert(unsigned long *block)
 
 /* Performs CRC rotation in the block, based on the character given */
 
-void arjsec_crcterm(unsigned long *block, unsigned char c)
+void arjsec_crcterm(uint32_t *block, unsigned char c)
 {
  unsigned short hi, lo, t;
 
  block[3]=crc32_for_char(block[3], c);
  block[0]=crc32_for_char(block[0]^block[1], (unsigned char)(c^(unsigned char)block[2]));
- block[1]*=((block[0]>>16)<<16)+(unsigned long)((unsigned short)block[0]|((unsigned short)c)<<8|1);
+ block[1]*=((block[0]>>16)<<16)+(uint32_t)((unsigned short)block[0]|((unsigned short)c)<<8|1);
  block[1]++;
  block[2]+=block[0];
  block[2]+=crc32_for_char(block[1], (unsigned char)block[0]);
@@ -222,7 +222,7 @@ void arjsec_crcterm(unsigned long *block, unsigned char c)
  hi+=lo%2;
  lo=(lo>>1)+t;
  lo=(lo<<(16-c%16))+(lo>>(c%16));
- block[2]=((unsigned long)hi<<16)+(unsigned long)lo;
+ block[2]=((uint32_t)hi<<16)+(uint32_t)lo;
 }
 
 #if SFX_LEVEL>=ARJ
@@ -230,14 +230,14 @@ void arjsec_crcterm(unsigned long *block, unsigned char c)
 /* Reads an ARJ-security envelope from the file, performing some preliminary
    analysis. */
 
-void arjsec_read(unsigned long *block, FILE *stream, unsigned long len)
+void arjsec_read(uint32_t *block, FILE *stream, uint32_t len)
 {
  unsigned char tmp_block[512];
  unsigned char *tmp_bptr;
  unsigned char c;
  int buf_len;
  int bytes_read;
- unsigned long term, term2;
+ uint32_t term, term2;
  unsigned short lo, lo2, hi2, hi, t;
 
  arjsec_newblock(block);
@@ -248,7 +248,7 @@ void arjsec_read(unsigned long *block, FILE *stream, unsigned long len)
   tmp_bptr=tmp_block;
   if(bytes_read==0)
    break;
-  len-=(unsigned long)bytes_read;
+  len-=(uint32_t)bytes_read;
   crc32term=block[3];
   crc32_for_block(tmp_block, bytes_read);
   block[3]=crc32term;
@@ -256,16 +256,16 @@ void arjsec_read(unsigned long *block, FILE *stream, unsigned long len)
   {
    c=*(tmp_bptr++);
    term=block[0]^block[1];
-   term=(term>>8)^((unsigned long)get_crc32tab((term%256)^c^(unsigned char)block[2]));
+   term=(term>>8)^((uint32_t)get_crc32tab((term%256)^c^(unsigned char)block[2]));
    block[0]=term;
-   term2=(((term>>16)<<16)+(((unsigned long)c<<8)+1))|(term%65536L);
+   term2=(((term>>16)<<16)+(((uint32_t)c<<8)+1))|(term%65536L);
    lo=(unsigned short)block[1];
    hi=(unsigned short)(block[1]>>16);
    lo2=(unsigned short)term2;
    hi2=(unsigned short)(term2>>16);
    hi*=lo2;
    hi2=hi2*lo+hi;
-   term=((unsigned long)lo*(unsigned long)lo2)+(((unsigned long)hi2)<<16L)+1L;
+   term=((uint32_t)lo*(uint32_t)lo2)+(((uint32_t)hi2)<<16L)+1L;
    block[1]=term;
    block[2]+=block[0];
    term=(term>>8)^get_crc32tab((term%256)^(unsigned char)block[0]);
@@ -278,7 +278,7 @@ void arjsec_read(unsigned long *block, FILE *stream, unsigned long len)
    hi+=lo%2;
    lo=(lo>>1)+t;
    lo=(lo<<(16-c%16))+(lo>>(c%16));
-   block[2]=((unsigned long)hi<<16)+(unsigned long)lo;
+   block[2]=((uint32_t)hi<<16)+(uint32_t)lo;
   }
  }
  arjsec_invert(block);
