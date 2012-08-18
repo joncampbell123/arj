@@ -16,5 +16,5 @@ j: process Win95 archive        n: new name prompt,  o: overwrite file
 k: skip preset options          r: erase type-ahead, v: go to next volume
 m: overwrite readonly        #: start install at disk N
 n: only New files            $: extract volume label
-o: set encryption module     @: display program option
+o: set encryption module     @@: display program option
 p: match with Pathname       !: execute command option

@@ -308,6 +308,10 @@ ARJSFXV_OBJS = $(patsubst %,$(ARJSFXV_DIR)/%, \
 
 $(ARJSFXV_DIR)/arjsfxv$x: $(ARJSFXV_OBJS) $(TOOLS_DIR)/postproc$x
 	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ $(ARJSFXV_OBJS) $(LIBS) $(DYN_LIBS)
+ifndef DEBUG
+	strip --strip-all -R .comment $(ARJSFXV_DIR)/arjsfxv$x
+	upx --best $(ARJSFXV_DIR)/arjsfxv$x
+endif
 
 $(BASEDIR)/fmsg_sfv.c $(BASEDIR)/imsg_sfv.c $(BASEDIR)/nmsg_sfv.c: $(TOOLS_DIR)/msgbind$x $(RESFILE)
 	$(TOOLS_DIR)/msgbind $(RESFILE) msg_sfv $(OS_ID) $(PACKAGE) $(LOCALE) $(BASEDIR)

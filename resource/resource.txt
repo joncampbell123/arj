@@ -475,7 +475,7 @@
 
 {FARMSGS}  {M_WRONG_ENC_VERSION}    {MSG_SFV}                            {*}                     {}  {en, FR, de, ru}     {F} {"Wrong encryption version", "", "Falsche VerschlБsselungsversion", "Неподдерживаемый алгоритм шифрования"}
 {FARMSGS}  {M_ARJSFX_BANNER}        {MSG_SFV}                            {*}                     {}  {en, FR, de, ru}     {F} {"ARJSFXV %s - ARJ Archive Self-Extractor. %s -? for help.\nCopyright 1999-2004, ARJ Software Russia. All Rights Reserved. %s\n", "", "ARJSFXV %s - ARJ Archiv Selbst-Entpacker. %s -? for help.\nCopyright 1999-2004, ARJ Software Russia. Alle Rechte vorbehalten. %s\n", "Самораспаковывающийся архив ARJSFXV %s. Для справки наберите %s -?\n(C) 1998-2004, ARJ Software Russia. %s\n"}
-{FARMSGS}  {M_SW_TABLE}             {MSG_SFV}                            {*}                     {}  {*}                  {F} {"ABCDEFGHIJKLMNOPRSTUVWXYZ?#&*$@!_"}
+{FARMSGS}  {M_SW_TABLE}             {MSG_SFV}                            {*}                     {}  {*}                  {F} {"ABCDEFGHIJKLMNOPRSTUVWXYZ?#&*$@@!_"}
 {FARMSGS}  {M_SW_PARAMS}            {MSG_SFV}                            {*}                     {}  {*}                  {F} {"100000002000000010000000000010000"}
 {FARMSGS}  {M_JYSW_TABLE}           {MSG_SFV}                            {*}                     {}  {*}                  {F} {"ACKMNORV"}
 {FARMSGS}  {M_ARCHIVE_SUFFIXES}     {MSG_SFV}                            {*}                     {}  {*}                  {F} {".ARJ.ZIP.PAK.ARC.LZH"}
