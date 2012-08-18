@@ -51,7 +51,7 @@ struct pool
  unsigned int safesize;
  unsigned int columns;
  unsigned int indent;
- unsigned long crc32;
+ uint32_t crc32;
 };
 
 /* A Q&D emulation of the strupr() and strlwr() for those who don't have it */
