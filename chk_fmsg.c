@@ -21,6 +21,10 @@ void check_fmsg(int skip_check)
  #endif
 
  crc32term=CRC_MASK;
+ #ifdef DEBUG
+   fprintf(stderr,"CRC start %08lx\n",(unsigned long)crc32term);
+ #endif
+
  #if SFX_LEVEL>=ARJ
  if(skip_check!=CHKMSG_SKIP)
  #else
@@ -32,8 +36,14 @@ void check_fmsg(int skip_check)
    #ifdef FMSG_ST
     far_strcpyn((char FAR *)fmsg_buf, (char FAR *)*index_ptr, sizeof(fmsg_buf));
     crc32_for_string(fmsg_buf);
+    #ifdef DEBUG
+     fprintf(stderr,"CRC check result [FMSG_ST] %08lx for '%s' => '%s'\n",(unsigned long)crc32term,*index_ptr,fmsg_buf);
+    #endif
    #else
     crc32_for_string(*index_ptr);
+    #ifdef DEBUG
+     fprintf(stderr,"CRC check result %08lx for '%s'\n",(unsigned long)crc32term,*index_ptr);
+    #endif
    #endif
   }
   if(crc32term!=FARMSGS_CRC32) {
