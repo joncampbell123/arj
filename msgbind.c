@@ -21,6 +21,14 @@
 #include <signal.h>
 #include <time.h>
 
+/* arjdata.c: string ASCIIZ variant of memmove().
+ *            the original code used strcpy(p,p+1) which
+ *            is not reliable on x86_64 due to GNU intrinsics
+ *            using DWORD, QWORD, or even SSE sized memory I/O.
+ *            Such optimizations are nice except they break down
+ *            and corrupt the string in overlapping cases. */
+void strmmove(char *dest,const char *src);
+
 #define MSG_SIZE               32752    /* Constant msg buffer size */
 #define POOL_SIZE              51200    /* Maximum size of variable-len buf */
 #define POOL_R_INC              1024    /* Realloc incrementation */
@@ -578,7 +586,7 @@ int main(int argc, char **argv)
    }
    strcat(pool[tpool].data, msgname);
    strcat(pool[tpool].data, ", ");
-   strcpy(msg_buffer, msg_buffer+1);
+   strmmove(msg_buffer, msg_buffer+1);
    buf_len=strlen(msg_buffer);
    msg_buffer[--buf_len]='\0';
    patch_string(msg_buffer);
@@ -595,7 +603,7 @@ int main(int argc, char **argv)
   fputs(pool[tpool].data, ifile);
   free(pool[tpool].data);
   /* ...by the way, flushing the CRC-32 values */
-  fprintf(hfile, "#define %s_CRC32 0x%08lx\n", pool[tpool].name, pool[tpool].crc32);
+  fprintf(hfile, "#define %s_CRC32 0x%08lx\n", pool[tpool].name, (unsigned long)pool[tpool].crc32);
   fprintf(hfile, "extern %cMSGP %s[];\n", pool[tpool].st_class, pool[tpool].name);
  }
  /* Now, put an ending LF to all files */

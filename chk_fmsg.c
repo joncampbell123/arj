@@ -10,6 +10,9 @@
 
 DEBUGHDR(__FILE__)                      /* Debug information block */
 
+/* uncomment this if you want to debug CRC errors --J.C. */
+/* #define DEBUG_CRC */
+
 /* Checks the integrity of FMSG section. Reports CRC error in case of CRC
    mismatch. */
 
@@ -21,7 +24,7 @@ void check_fmsg(int skip_check)
  #endif
 
  crc32term=CRC_MASK;
- #ifdef DEBUG
+ #ifdef DEBUG_CRC
    fprintf(stderr,"CRC start %08lx\n",(unsigned long)crc32term);
  #endif
 
@@ -36,18 +39,18 @@ void check_fmsg(int skip_check)
    #ifdef FMSG_ST
     far_strcpyn((char FAR *)fmsg_buf, (char FAR *)*index_ptr, sizeof(fmsg_buf));
     crc32_for_string(fmsg_buf);
-    #ifdef DEBUG
+    #ifdef DEBUG_CRC
      fprintf(stderr,"CRC check result [FMSG_ST] %08lx for '%s' => '%s'\n",(unsigned long)crc32term,*index_ptr,fmsg_buf);
     #endif
    #else
     crc32_for_string(*index_ptr);
-    #ifdef DEBUG
+    #ifdef DEBUG_CRC
      fprintf(stderr,"CRC check result %08lx for '%s'\n",(unsigned long)crc32term,*index_ptr);
     #endif
    #endif
   }
   if(crc32term!=FARMSGS_CRC32) {
-   #ifdef DEBUG
+   #ifdef DEBUG_CRC
    fprintf(stderr,"CRC check failed: got=%08lx expected=%08lx\n",
      (unsigned long)crc32term,
      (unsigned long)FARMSGS_CRC32);
