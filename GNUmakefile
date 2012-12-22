@@ -6,7 +6,7 @@
 
 # Environment
 
-ifndef CC
+ifndef $(CC)
 CC=gcc
 endif
 
@@ -38,7 +38,7 @@ pkglibdir = $(libdir)/arj
 
 # Defaults
 
-ifndef LOCALE
+ifndef $(LOCALE)
 LOCALE = en
 endif
 
