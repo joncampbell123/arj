@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-$project = 'android-hax';
+$project = 'arj';
 
 if (!open(S,"git --no-pager log --max-count=1 |")) { exit 1; }
 my $lcommit = "x";
