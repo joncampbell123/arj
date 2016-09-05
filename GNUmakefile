@@ -465,17 +465,17 @@ prepare:
 #
 
 clean:
-	-rm -f $(BASEDIR)/*
-	-rm -f $(TOOLS_DIR)/*
-	-rm -f $(ARJCRYPT_DIR)/*
-	-rm -f $(SFXSTUB_DIR)/*
-	-rm -f $(ARJSFXV_DIR)/*
-	-rm -f $(ARJSFX_DIR)/*
-	-rm -f $(ARJSFXJR_DIR)/*
-	-rm -f $(ARJ_DIR)/*
-	-rm -f $(REARJ_DIR)/*
-	-rm -f $(REGISTER_DIR)/*
-	-rm -f $(ARJDISP_DIR)/*
+	-rm -Rf $(BASEDIR)
+	-rm -Rf $(TOOLS_DIR)
+	-rm -Rf $(ARJCRYPT_DIR)
+	-rm -Rf $(SFXSTUB_DIR)
+	-rm -Rf $(ARJSFXV_DIR)
+	-rm -Rf $(ARJSFX_DIR)
+	-rm -Rf $(ARJSFXJR_DIR)
+	-rm -Rf $(ARJ_DIR)
+	-rm -Rf $(REARJ_DIR)
+	-rm -Rf $(REGISTER_DIR)
+	-rm -Rf $(ARJDISP_DIR)
 	-rm -f arj.core
 
 #
